@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
+// 尝试QtCreator用git
+
 MainWindow::~MainWindow()
 {
     delete ui;
