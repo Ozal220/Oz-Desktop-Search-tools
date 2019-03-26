@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "include/Application.hpp"
+using namespace CppJieba;
+
 #include <QDir>
 #include <QFileInfo>
 #include <QDirIterator>
@@ -8,15 +11,68 @@
 #include <QDebug>
 #include <QStringList>
 #include <QFileDialog>
+#include <QDesktopServices>
 
 void findFiles(QString);
+
+int JiebaTest() {
+    CppJieba::Application app("./../Oz-DesktopSearch/dict/jieba.dict.utf8",
+                            "./../Oz-DesktopSearch/dict/hmm_model.utf8",
+                            "./../Oz-DesktopSearch/dict/user.dict.utf8",
+                            "./../Oz-DesktopSearch/dict/idf.utf8",
+                            "./../Oz-DesktopSearch/dict/stop_words.utf8");
+    vector<string> words;
+    string result;
+    string s = "我叫吾孜艾力·热夏提,搞这个破分词工具搞了一天了,拜托结巴大哥好好运作吧！。";
+    string buf;
+    ofstream ofs("./../shit.txt");
+    if(ofs.is_open())
+    {
+        ofs << "test output ：" << s << endl;
+
+        ofs << "\n\e[32m" << "[demo] METHOD_MP" << "\e[0m\n"; // colorful
+        app.cut(s, words, METHOD_MP);
+        ofs << join(words.begin(), words.end(), "/") << endl;
+
+        ofs << "\n\e[32m" << "[demo] METHOD_HMM" << "\e[0m\n"; // colorful
+        app.cut(s, words, METHOD_HMM);
+        ofs << join(words.begin(), words.end(), "/") << endl;
+
+        ofs << "\n\e[32m" << "[demo] METHOD_MIX" << "\e[0m\n"; // colorful
+        app.cut(s, words, METHOD_MIX);
+        ofs << join(words.begin(), words.end(), "/") << endl;
+
+        ofs << "\n\e[32m" << "[demo] METHOD_FULL" << "\e[0m\n"; // colorful
+        app.cut(s, words, METHOD_FULL);
+        ofs << join(words.begin(), words.end(), "/") << endl;
+
+        ofs << "\n\e[32m" << "[demo] METHOD_QUERY" << "\e[0m\n"; // colorful
+        app.cut(s, words, METHOD_QUERY);
+        ofs << join(words.begin(), words.end(), "/") << endl;
+
+
+        ofs << "\n\e[32m" << "[demo] TAGGING" << "\e[0m\n"; // colorful
+        vector<pair<string, string> > tagres;
+        app.tag(s, tagres);
+        ofs << s << endl;
+        ofs << tagres << endl;;
+
+        ofs << "\n\e[32m" << "[demo] KEYWORD" << "\e[0m\n"; // colorful
+        vector<pair<string, double> > keywordres;
+        app.extract(s, keywordres, 5);
+        ofs << s << endl;
+        ofs << keywordres << endl;
+    }
+    return 0;
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
 
+    JiebaTest();
+    ui->setupUi(this);
 //    QString genPath = "C:/Users/10367/Desktop/Desktop Search";
 //    findFiles(genPath);
 }
@@ -71,3 +127,4 @@ void MainWindow::on_pushButton_clicked()
 {
     findFiles(ui->DirLabel->text());
 }
+
