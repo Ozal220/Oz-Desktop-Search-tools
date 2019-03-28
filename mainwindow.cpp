@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "include/Application.hpp"
-using namespace CppJieba;
+#include "cppjieba/include/cppjieba/Jieba.hpp"
+using namespace std;
 
 #include <QDir>
 #include <QFileInfo>
@@ -16,55 +16,38 @@ using namespace CppJieba;
 void findFiles(QString);
 
 int JiebaTest() {
-    CppJieba::Application app("./../Oz-DesktopSearch/dict/jieba.dict.utf8",
-                            "./../Oz-DesktopSearch/dict/hmm_model.utf8",
-                            "./../Oz-DesktopSearch/dict/user.dict.utf8",
-                            "./../Oz-DesktopSearch/dict/idf.utf8",
-                            "./../Oz-DesktopSearch/dict/stop_words.utf8");
+    const string DICT_PATH = "./../Oz-DesktopSearch/cppjieba/dict/jieba.dict.utf8";
+    const string HMM_PATH = "./../Oz-DesktopSearch/cppjieba/dict/hmm_model.utf8";
+    const string USER_DICT_PATH = "./../Oz-DesktopSearch/cppjieba/dict/user.dict.utf8";
+    const string IDF_PATH = "./../Oz-DesktopSearch/cppjieba/dict/idf.utf8";
+    const string STOP_WORD_PATH = "./../Oz-DesktopSearch/cppjieba/dict/stop_words.utf8";
+
+    cppjieba::Jieba jieba(DICT_PATH,
+        HMM_PATH,
+        USER_DICT_PATH,
+        IDF_PATH,
+        STOP_WORD_PATH);
+
     vector<string> words;
-    string result;
-    string s = "我叫吾孜艾力·热夏提,搞这个破分词工具搞了一天了,拜托结巴大哥好好运作吧！。";
-    string buf;
+    vector<cppjieba::Word> words_with_offset;
+
+    string s = "吾孜艾力·热夏提硕士毕业于china科学院计算所，后在日本京都大学深造japanese sorry";
+    string s1= "我是拖拉机学院手扶拖拉机专业的。不用多久，我就会升职加薪，当上CEO，走上人生巅峰。";
+
     ofstream ofs("./../shit.txt");
     if(ofs.is_open())
     {
-        ofs << "test output ：" << s << endl;
+        qDebug("open shit success");
+        ofs << "test output ：" << s1 << endl;
+        jieba.CutForSearch(s1, words_with_offset, true);
+        for(cppjieba::Word word : words_with_offset){
 
-        ofs << "\n\e[32m" << "[demo] METHOD_MP" << "\e[0m\n"; // colorful
-        app.cut(s, words, METHOD_MP);
-        ofs << join(words.begin(), words.end(), "/") << endl;
-
-        ofs << "\n\e[32m" << "[demo] METHOD_HMM" << "\e[0m\n"; // colorful
-        app.cut(s, words, METHOD_HMM);
-        ofs << join(words.begin(), words.end(), "/") << endl;
-
-        ofs << "\n\e[32m" << "[demo] METHOD_MIX" << "\e[0m\n"; // colorful
-        app.cut(s, words, METHOD_MIX);
-        ofs << join(words.begin(), words.end(), "/") << endl;
-
-        ofs << "\n\e[32m" << "[demo] METHOD_FULL" << "\e[0m\n"; // colorful
-        app.cut(s, words, METHOD_FULL);
-        ofs << join(words.begin(), words.end(), "/") << endl;
-
-        ofs << "\n\e[32m" << "[demo] METHOD_QUERY" << "\e[0m\n"; // colorful
-        app.cut(s, words, METHOD_QUERY);
-        ofs << join(words.begin(), words.end(), "/") << endl;
-
-
-        ofs << "\n\e[32m" << "[demo] TAGGING" << "\e[0m\n"; // colorful
-        vector<pair<string, string> > tagres;
-        app.tag(s, tagres);
-        ofs << s << endl;
-        ofs << tagres << endl;;
-
-        ofs << "\n\e[32m" << "[demo] KEYWORD" << "\e[0m\n"; // colorful
-        vector<pair<string, double> > keywordres;
-        app.extract(s, keywordres, 5);
-        ofs << s << endl;
-        ofs << keywordres << endl;
+            ofs << word << endl;
+        }
     }
     return 0;
 }
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -72,12 +55,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 
     JiebaTest();
-    ui->setupUi(this);
+    //ui->setupUi(this);
 //    QString genPath = "C:/Users/10367/Desktop/Desktop Search";
 //    findFiles(genPath);
 }
-
-// 尝试QtCreator用git
 
 MainWindow::~MainWindow()
 {
