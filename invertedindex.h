@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <QMap>
+#include <QDebug>
 
 using namespace std;
 
@@ -16,46 +17,20 @@ private:
         vector<uint32_t> pos;   // 单词出现位置
     }WordsInfo;
 
-    QMap<string, QMap<int, WordsInfo>> indexMap;      //文档最终的<单词表,(单词出现次数,<位置表>)>
+    QMap<string, QMap<unsigned int, WordsInfo>> indexMap;      //文档最终的<单词表,<docId,(单词出现次数,<位置表>)>>
 
 public:
     InvertedIndex() = default;
     ~InvertedIndex();
-    QMap<string, QMap<int, WordsInfo>> getIndexMap()
+    QMap<string, QMap<unsigned int, WordsInfo>> getIndexMap()
     {
         return indexMap;
     }
 
-    bool addToIndex(string, QMap<int, WordsInfo>);
-};
+    void addToIndex(unsigned int docId, string, WordsInfo);
+    void addToIndex(unsigned int docId, string, unsigned int, vector<uint32_t>);
 
-bool InvertedIndex::addToIndex(string word, QMap<int, WordsInfo> docInfo)
-{
-/*
-    iter = this->indexMap.find(word.word);
-    if(iter != this->getWordsMap().end()){
-        // 单词已存在
-        iter->count += 1;               //出现次数+1
-        iter->pos.push_back(word.unicode_offset);   //添加偏移量pos
-    }
-    else {
-        // 新单词
-        word_info.count = 1;
-        word_info.pos.push_back(word.unicode_offset);
-        this->getWordsMap().insert(word.word, word_info);
-    }
- */
-    QMap<string, QMap<int, WordsInfo>>::Iterator iter;
-    iter = this->indexMap.find(word);
-    if(iter != this->indexMap.end())
-    {
-        // 单词已存在
-        iter
-    }
-    else {
-        // 新单词
-        this->indexMap.insert(word, docInfo);
-    }
-}
+    void show();
+};
 
 #endif // INVERTEDINDEX_H

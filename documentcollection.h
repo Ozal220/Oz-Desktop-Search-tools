@@ -21,80 +21,26 @@ public:
     DocCollettion() = default;
     ~DocCollettion();
 
-    //void setFilters(QStringList filters);
     void setFilters(QStringList filters)
     {
         this->filters = filters;
     }
 
-    //void findFiles(QString);
-    void findFiles(QString path)
-    {
-        QDir dir(path);
-        if(!dir.exists())
-        {
-            qDebug() << "wrong path";
-            return;
-        }
-        if(this->filters.isEmpty())
-        {
-            qDebug() << "filters is empty, plese use setFilters(QStringList) set filters first";
-            return;
-        }
-        dir.setNameFilters(this->filters);  //设置文件名称过滤器，只为filters格式
-        dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDot | QDir::NoDotDot); //设置类型过滤器，只为文件格式
-        fileInfo fi;
-        foreach(QFileInfo mfi, dir.entryInfoList())
-        {
-            if(mfi.isFile())
-            {
-                qDebug()<< "File :" << mfi.filePath();
-                fi.id = docID;
-                fi.filePath = mfi.filePath();
-                fi.lastModifiedTime = mfi.lastModified().toString();
-                this->docInfo.insert(docID++, fi);
-                //ui->filesList->addItem(new QListWidgetItem("path: " + mfi.filePath() + " last modified time:" + mfi.lastModified().toString()));
-                //ui->filesList-> setViewMode(QListView::IconMode); //用大圖示顯示
-                //QObject::connect(fileList, SIGNAL(currentTextChanged(const QString &)),myLabel, SLOT(setText(const QString &)));
-            }
-            else
-            {
-                //qDebug() << "Entry Dir" << mfi.absoluteFilePath();
-                findFiles(mfi.absoluteFilePath());
-            }
-        }
-    }
+    void findFiles(QString);
 
     bool saveOnfile(QString);
-    //bool saveOnfile();
-    bool saveOnfile()
-    {
-        if(this->savedPath.isEmpty())
-        {
-            qDebug() << "path is empty";
-            return false;
-        }
-        std::ofstream file;
-        file.open(this->savedPath.toStdString());
-        if(!file.is_open())
-        {
-            qDebug("open file failed!");
-            return false;
-        }
-        foreach(auto s, this->docInfo)
-        {
+    bool saveOnfile();
 
-            file  << "#id= " << s.id << "#path= " << s.filePath.toStdString() << "#time= " << s.lastModifiedTime.toStdString() << std::endl;
-        }
-        file.close();
-        return true;
+    void clearDocInfo()
+    {
+        docInfo.clear();
     }
 
     typedef struct fileInfo     //保存在文件和内存中的value格式
     {
         QString filePath;
         QString lastModifiedTime;
-        unsigned int id;
+        //unsigned int id;
     }FileInfo;
 
     QMap<unsigned int, fileInfo> getDocInfo()
@@ -109,5 +55,6 @@ private:
 
     QMap<unsigned int, fileInfo> docInfo;
 };
+
 
 #endif // DOCUMENTCOLLECTION_H

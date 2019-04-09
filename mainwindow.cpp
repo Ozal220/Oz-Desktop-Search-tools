@@ -38,14 +38,19 @@ void MainWindow::on_pushButton_clicked()
         qDebug("创建<文档信息文件>失败");
     qDebug("创建<文档信息文件>成功");
 
-    QMap<unsigned int, DocCollettion::fileInfo> docInfo = docCollectionPtr->getDocInfo();     //获取docInfo
-    QMap<unsigned int, DocCollettion::fileInfo>::iterator iter = docInfo.begin();          //遍历所有文档，根据路径打开
-    while(iter != docInfo.end())
+    QMap<unsigned int, DocCollettion::fileInfo>::iterator docIter;          //遍历所有文档，根据路径打开
+    QMap<string, DocSegmentation::wordsInfo>::iterator wordIter;
+
+    for(docIter = docCollectionPtr->getDocInfo().begin(); docIter != docCollectionPtr->getDocInfo().end(); docIter++)
     {
-        docSegmentationPtr->useJieba(iter.value().filePath.toStdString());      //对文档分词
-        //indexPtr->getIndexMap().push
-        iter++;
+        docSegmentationPtr->useJieba(docIter.value().filePath.toStdString());      //对文档分词
+        // 将得到的文档单词信息保存到索引
+        for (wordIter = docSegmentationPtr->getWordsMap().begin(); wordIter != docSegmentationPtr->getWordsMap().end(); wordIter++)
+        {
+            // 插入到索引
+            indexPtr->addToIndex(docIter.key(), wordIter.key(), wordIter.value().count, wordIter.value().pos);
+        }
+        docSegmentationPtr->clearWordsMap();
     }
-
+    indexPtr->show();
 }
-
