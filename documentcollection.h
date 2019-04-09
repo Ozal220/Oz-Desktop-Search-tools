@@ -14,12 +14,12 @@
 #include <fstream>
 
 
-class  DocumentCollettion {
+class  DocCollettion {
 
 public:
 
-    DocumentCollettion() = default;
-    ~DocumentCollettion();
+    DocCollettion() = default;
+    ~DocCollettion();
 
     //void setFilters(QStringList filters);
     void setFilters(QStringList filters)

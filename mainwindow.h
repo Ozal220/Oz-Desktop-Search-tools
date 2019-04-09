@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QListWidget>
 #include "documentcollection.h"
+#include "docsegementation.h"
+#include "invertedindex.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,7 +18,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    DocumentCollettion *docControlPtr;
+    DocCollettion *docCollectionPtr;
+    DocSegmentation *docSegmentationPtr;
+    InvertedIndex *indexPtr;
 
 private slots:
 
