@@ -19,53 +19,54 @@ int DocSegmentation::useJieba(string file_path) {
     char buffer[512];           //jieba分词buffer值暂设为512
     vector<cppjieba::Word> words_with_offset;
 
-    WordsInfo word_info;
+    WordsInfo *wordInfoPtr;
 
     QMap<string, WordsInfo>::Iterator iter;
 
     ifstream ifs(file_path);
-    if(!ifs.is_open())
-    {
-        qDebug() << "open " << file_path.c_str() << " error";
+    if(!ifs.is_open())       
         return -1;
-    }
+
     if(!ifs.eof())
     {
         ifs.getline(buffer, 512);
         s = buffer;
         jieba.CutForSearch(s, words_with_offset);       //分词
+
         for(auto word : words_with_offset)
         {
-            iter = this->getWordsMap().find(word.word);
-            if(iter != this->getWordsMap().end()){
+            iter = wordsMap.find(word.word);
+            if(iter != wordsMap.end()){
                 // 单词已存在
+                //qDebug() << "单词已存在:" << word.word.c_str();
                 iter->count += 1;               //出现次数+1
                 iter->pos.push_back(word.unicode_offset);   //添加偏移量pos
             }
             else {
                 // 新单词
-                word_info.count = 1;
-                word_info.pos.push_back(word.unicode_offset);
-                this->getWordsMap().insert(word.word, word_info);
+                //qDebug() << "新单词:" << word.word.c_str();
+                wordInfoPtr = new WordsInfo(1, word.unicode_offset);
+                wordsMap.insert(word.word, *wordInfoPtr);
             }
-
         }
     }
-/*
-    string s = "吾孜艾力·热夏提硕士毕业于china科学院计算所，后在日本京都大学深造japanese sorry";
-    string s1= "我是拖拉机学院手扶拖拉机专业的。不用多久，我就会升职加薪，当上CEO，走上人生巅峰。";
-    ofstream ofs("./../shit.txt");
-    if(ofs.is_open())
-    {
-        qDebug("open shit success");
-        ofs << "test output ：" << s1 << endl;
-        jieba.CutForSearch(s1, words_with_offset, true);
-        for(cppjieba::Word word : words_with_offset){
-
-            ofs << word << endl;
-        }
-    }
-*/
-
     return 0;
+}
+
+void DocSegmentation::showMap()
+{
+    QDebug debug = qDebug().nospace();
+
+    if(wordsMap.isEmpty()){
+        debug << "wordsMap is empty";
+        return;
+    }
+//    cout << "wordsMap size: " << wordsMap.size() << endl;
+    QMap<string, WordsInfo>::Iterator iter = wordsMap.begin();
+    while(iter != wordsMap.end())
+    {
+        debug << "<" << iter.key().c_str() << "," << iter.value().count << "," << iter.value().pos << ">,";
+        iter++;
+    }
+    debug << endl;
 }

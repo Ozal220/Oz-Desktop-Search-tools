@@ -43,15 +43,15 @@ public:
         //unsigned int id;
     }FileInfo;
 
-    QMap<unsigned int, fileInfo> getDocInfo()
+    QMap<unsigned int, fileInfo> &getDocInfo()
     {
         return this->docInfo;
     }
 
 private:
-    unsigned int docID = 0;
+    unsigned int docID = 0;                                 // 为每个文档分配ID,从0开始自增
     QStringList filters = {"*.txt", "*.html", "*.htm"};    //filters << "*.txt" << "*.html" << "*.htm" ;
-    QString savedPath = "C:/Users/10367/Desktop/Desktop Search/Oz-Search Project/docs_path_info.txt";
+    QString savedPath = "./../docs_path_info.txt";
 
     QMap<unsigned int, fileInfo> docInfo;
 };

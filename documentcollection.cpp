@@ -22,10 +22,9 @@ void DocCollettion::findFiles(QString path)
         if(mfi.isFile())
         {
             qDebug()<< "File :" << mfi.filePath();
-            //fi.id = docID;
             fi.filePath = mfi.filePath();
             fi.lastModifiedTime = mfi.lastModified().toString();
-            this->docInfo.insert(docID++, fi);
+            this->docInfo.insert(this->docID++, fi);
             //ui->filesList->addItem(new QListWidgetItem("path: " + mfi.filePath() + " last modified time:" + mfi.lastModified().toString()));
             //ui->filesList-> setViewMode(QListView::IconMode); //用大圖示顯示
             //QObject::connect(fileList, SIGNAL(currentTextChanged(const QString &)),myLabel, SLOT(setText(const QString &)));
