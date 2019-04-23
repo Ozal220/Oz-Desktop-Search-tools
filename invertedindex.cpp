@@ -56,7 +56,7 @@ void InvertedIndex::show()
 
 bool InvertedIndex::saveOnFile()
 {
-    ofstream file(this->path);
+    ofstream file(this->savedPath);
     if(!file.is_open())
     {
         qDebug("index file open failed");
@@ -81,7 +81,7 @@ bool InvertedIndex::saveOnFile()
     return true;
 }
 
-bool InvertedIndex::loadIndex()
+bool InvertedIndex::loadIndex(string path)
 {
     indexMap.clear();
     ifstream file(path);

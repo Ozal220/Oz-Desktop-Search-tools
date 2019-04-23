@@ -20,7 +20,7 @@ private:
     }WordsInfo;
 
     QMap<string, QMap<unsigned int, WordsInfo>> indexMap;      //文档最终的<单词表,<docId,(单词出现次数,<位置表>)>>
-    string path = "./../inverted_index.txt";
+    string savedPath = "./../Index";                            //索引保存位置
 
 public:
     InvertedIndex() = default;
@@ -33,7 +33,7 @@ public:
     void addToIndex(unsigned int docId, string, WordsInfo);
     void addToIndex(unsigned int docId, string, unsigned int, vector<uint32_t>);    // 将<单词-文档信息>添加到索引
     bool saveOnFile();
-    bool loadIndex();
+    bool loadIndex(string);
     void show();
 };
 

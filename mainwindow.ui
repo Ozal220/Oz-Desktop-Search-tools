@@ -6,91 +6,194 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>733</width>
-    <height>465</height>
+    <width>975</width>
+    <height>636</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QListWidget" name="filesList">
+   <widget class="QListWidget" name="resultListWidget">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>110</y>
-      <width>661</width>
-      <height>281</height>
+      <y>220</y>
+      <width>931</width>
+      <height>341</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="searchButton">
+   <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>60</y>
-      <width>89</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>搜索关键词</string>
-    </property>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>25</x>
+      <x>430</x>
       <y>0</y>
-      <width>691</width>
-      <height>51</height>
+      <width>511</width>
+      <height>101</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QPushButton" name="choiceDirButton">
-       <property name="maximumSize">
-        <size>
-         <width>120</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>选择文件夹</string>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="searchLine"/>
      </item>
      <item>
-      <widget class="QLabel" name="DirLabel">
+      <widget class="QPushButton" name="searchButton">
        <property name="text">
-        <string>TextLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="maximumSize">
-        <size>
-         <width>120</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>给我建索引</string>
+        <string>搜索关键词</string>
        </property>
       </widget>
      </item>
     </layout>
    </widget>
-   <widget class="QLineEdit" name="searchLine">
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>110</y>
+      <width>511</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="htmBox">
+       <property name="text">
+        <string>html/htm</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="txtBox">
+       <property name="text">
+        <string>txt</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="checkBox_3">
+       <property name="text">
+        <string>ppt</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QCheckBox" name="pdfBox">
+       <property name="text">
+        <string>pdf</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="docBox">
+       <property name="text">
+        <string>doc/docx</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QCheckBox" name="checkBox_6">
+       <property name="text">
+        <string>excel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>60</y>
-      <width>191</width>
-      <height>31</height>
+      <y>10</y>
+      <width>381</width>
+      <height>201</height>
      </rect>
     </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>选择索引</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="indexList"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="deleteIndexButton">
+         <property name="text">
+          <string>删除索引</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="updateIndexButton">
+         <property name="text">
+          <string>更新索引</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addIndexButton">
+         <property name="maximumSize">
+          <size>
+           <width>120</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>添加索引</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -98,18 +201,10 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>733</width>
+     <width>975</width>
      <height>25</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

@@ -20,15 +20,16 @@ public:
     ~MainWindow();
     DocCollettion *docCollectionPtr;
     DocSegmentation *docSegmentationPtr;
-    InvertedIndex *indexPtr;
+//    InvertedIndex *indexPtr;
+    QList<InvertedIndex> indexes;
+    void loadIndexUI();
+    inline void addBox(QString str);
 
 private slots:
 
-    void on_choiceDirButton_clicked();
-
-    void on_pushButton_clicked();
-
     void on_searchButton_clicked();
+
+    void on_addIndexButton_clicked();
 
 private:
     Ui::MainWindow *ui;
