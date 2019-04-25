@@ -19,20 +19,33 @@ private:
         vector<uint32_t> pos;   // 单词出现位置
     }WordsInfo;
 
-    QMap<string, QMap<unsigned int, WordsInfo>> indexMap;      //文档最终的<单词表,<docId,(单词出现次数,<位置表>)>>
-    string savedPath = "./../Index";                            //索引保存位置
+    QMap<string, QMap<unsigned int, WordsInfo>> indexMap;           //单个索引<单词表,<docId,(单词出现次数,<位置表>)>>
+    QList<QMap<string, QMap<unsigned int, WordsInfo>>> indexList;   //所有索引列表
+    QList<QString> indexPathList;                                   //所有索引的路径列表
+    string savedPath = "./../Index";                                //索引保存文件夹
 
 public:
     InvertedIndex() = default;
     ~InvertedIndex();
+    //获取索引
     QMap<string, QMap<unsigned int, WordsInfo>> getIndexMap()
     {
         return indexMap;
     }
-
-    void addToIndex(unsigned int docId, string, WordsInfo);
+    //获取所有索引
+    QList<QMap<string, QMap<unsigned int, WordsInfo>>> getIndexList()
+    {
+        return indexList;
+    }
+    //获取索引文件列表
+    QList<QString> &getPathList()
+    {
+        return indexPathList;
+    }
     void addToIndex(unsigned int docId, string, unsigned int, vector<uint32_t>);    // 将<单词-文档信息>添加到索引
-    bool saveOnFile();
+    void addToIndexList();
+    void addToPathList(QString);
+    bool saveOnFile(QString);
     bool loadIndex(string);
     void show();
 };

@@ -1,22 +1,6 @@
 #include "invertedindex.h"
 
-void InvertedIndex::addToIndex(unsigned int docId, string word, WordsInfo docInfo)
-{
-    QMap<string, QMap<unsigned int, WordsInfo>>::Iterator iter;
-    iter = this->indexMap.find(word);
-    if(iter != this->indexMap.end())
-    {
-        // 单词已存在
-        iter.value().insert(docId, docInfo);
-    }
-    else {
-        // 新单词
-        QMap<unsigned int, WordsInfo> tmp;
-        tmp.insert(docId, docInfo);
-        this->indexMap.insert(word, tmp);
-    }
-}
-
+//将单词对应的文档信息添加到索引
 void InvertedIndex::addToIndex(unsigned int docId, string word, unsigned int count, vector<uint32_t> pos)
 {
     WordsInfo docInfo;
@@ -38,6 +22,14 @@ void InvertedIndex::addToIndex(unsigned int docId, string word, unsigned int cou
     }
 }
 
+//将新建立的索引添加到<索引集>
+void InvertedIndex::addToIndexList()
+{
+    this->indexList.push_back(this->indexMap);
+    indexMap.clear();
+}
+
+//显示索引内容
 void InvertedIndex::show()
 {
     QDebug debug = qDebug().nospace();
@@ -54,9 +46,10 @@ void InvertedIndex::show()
 
 }
 
-bool InvertedIndex::saveOnFile()
+bool InvertedIndex::saveOnFile(QString path)
 {
-    ofstream file(this->savedPath);
+    string filePath = "./../Index/" + path.toStdString();
+    ofstream file(filePath);
     if(!file.is_open())
     {
         qDebug("index file open failed");
@@ -120,4 +113,9 @@ bool InvertedIndex::loadIndex(string path)
         }
     }
     return true;
+}
+
+void InvertedIndex::addToPathList(QString path)
+{
+    indexPathList.push_back(path);
 }

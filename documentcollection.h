@@ -28,24 +28,19 @@ public:
 
     void findFiles(QString);
 
-    bool saveOnfile(QString);
     bool saveOnfile();
 
-    void clearDocInfo()
+    void load();
+
+    //key = docId, value = path
+    QMap<unsigned int, QString> &getNewDocInfo()
     {
-        docInfo.clear();
+        return this->newDocInfo;
     }
 
-    typedef struct fileInfo     //保存在文件和内存中的value格式
+    QMap<unsigned int, QString> &getAllDocInfo()
     {
-        QString filePath;
-        QString lastModifiedTime;
-        //unsigned int id;
-    }FileInfo;
-
-    QMap<unsigned int, fileInfo> &getDocInfo()
-    {
-        return this->docInfo;
+        return this->allDocInfo;
     }
 
 private:
@@ -53,7 +48,8 @@ private:
     QStringList filters = {"*.txt", "*.html", "*.htm"};    //filters << "*.txt" << "*.html" << "*.htm" ;
     QString savedPath = "./../docs_path_info.txt";
 
-    QMap<unsigned int, fileInfo> docInfo;
+    QMap<unsigned int, QString> newDocInfo;
+    QMap<unsigned int, QString> allDocInfo;
 };
 
 
