@@ -22,11 +22,24 @@ void DocCollettion::findFiles(QString path)
         if(mfi.isFile())
         {
             qDebug()<< "File :" << mfi.filePath();
-            this->newDocInfo.insert(this->docID, mfi.filePath());
+            if(mfi.suffix() == "pdf")                                   //pdf
+            {
+                qDebug("pdf2txt");
+                QString newPath = this->tempPath + "pdf" + QString("%1").arg(docID) + ".txt";
+                pdfToText(mfi.filePath(), newPath);
+                this->newDocInfo.insert(this->docID, newPath);              //pdf转txt后的新地址
+            }
+            else if(mfi.suffix() == "html") {
+                qDebug() << "html2txt" << ",filePath=" << mfi.filePath();
+                QString newPath = this->tempPath + "html" + QString("%1").arg(docID) + ".txt";
+                html2Text(mfi.filePath(), newPath);
+                this->newDocInfo.insert(this->docID, newPath);
+            }
+            else {                                                          //txt
+                this->newDocInfo.insert(this->docID, mfi.filePath());
+            }
             this->allDocInfo.insert(this->docID++, mfi.filePath());
-            //ui->filesList->addItem(new QListWidgetItem("path: " + mfi.filePath() + " last modified time:" + mfi.lastModified().toString()));
-            //ui->filesList-> setViewMode(QListView::IconMode); //用大圖示顯示
-            //QObject::connect(fileList, SIGNAL(currentTextChanged(const QString &)),myLabel, SLOT(setText(const QString &)));
+
         }
         else
         {
@@ -46,9 +59,11 @@ bool DocCollettion::saveOnfile()
         qDebug("open file failed!");
         return false;
     }
-    QMap<unsigned int, QString>::Iterator iter;
-    for (iter = newDocInfo.begin(); iter != newDocInfo.end(); iter++) {
+    QMap<unsigned int, QString>::Iterator iter = allDocInfo.find(newDocInfo.firstKey());
+    int count = newDocInfo.size();
+    for (int i = 0; i < count; i++) {
         file  << iter.key() << " " << iter.value().toStdString() << std::endl;
+        iter++;
     }
     file.close();
     return true;
@@ -78,4 +93,41 @@ void DocCollettion::load()
             this->docID = id + 1;                   //本次docID自增从最后读取的id开始(这话可能只有自己懂。。。)
         }
     }
+}
+
+// 解析pdf文件，提取其中文本并保存txt文件
+bool DocCollettion::pdfToText(QString originPath, QString newPath)
+{
+    QFile file(newPath);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "建立" << newPath << "失败";
+        return false;
+    }
+    //调用pdf转txt程序
+    QProcess *pdftotext = new QProcess();
+    QString proPath = "./../Oz-DesktopSearch/xpdf/pdftotext.exe";
+    QStringList argument;
+    argument << "-raw" << "-nopgbrk" << originPath << newPath;
+    pdftotext->start(proPath, argument);
+    return true;
+}
+
+// 解析html文件，提取其中文本并保存txt文件
+bool DocCollettion::html2Text(QString originPath, QString newPath)
+{
+    QFile file(newPath);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "建立" << newPath << "失败";
+        return false;
+    }
+    //调用html转txt程序
+    QProcess *pdftotext = new QProcess();
+    qDebug() << "originPath:" << originPath;
+    QString proPath = "./../Oz-DesktopSearch/htmlToTxt/htmlToTxt.exe";
+    QStringList argument;
+    argument << originPath << newPath;
+    pdftotext->start(proPath, argument);
+    return true;
 }

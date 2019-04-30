@@ -16,7 +16,7 @@ class addIndexDialog : public QDialog
 public:
     explicit addIndexDialog(QWidget *parent = nullptr);
     QString choicePath;                                 //路径
-    QStringList filter = {"*.txt", "*.html", "*.htm"};  //先放着
+    QStringList filter = {"*.txt", "*.html", "*.htm", "*.pdf"};  //先放着
     QString indexName;                                  //索引名称
     ~addIndexDialog();
 

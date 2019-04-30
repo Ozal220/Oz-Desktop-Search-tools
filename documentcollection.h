@@ -12,7 +12,7 @@
 #include <QDesktopServices>
 #include <QDateTime>
 #include <fstream>
-
+#include <QProcess>
 
 class  DocCollettion {
 
@@ -32,6 +32,10 @@ public:
 
     void load();
 
+    bool pdfToText(QString originPath, QString newPath);
+
+    bool html2Text(QString originPath, QString newPath);
+
     //key = docId, value = path
     QMap<unsigned int, QString> &getNewDocInfo()
     {
@@ -45,8 +49,9 @@ public:
 
 private:
     unsigned int docID = 0;                                 // 为每个文档分配ID,从0开始自增
-    QStringList filters = {"*.txt", "*.html", "*.htm"};    //filters << "*.txt" << "*.html" << "*.htm" ;
+    QStringList filters = {"*.txt", "*.html", "*.htm", "*.pdf"};    //filters << "*.txt" << "*.html" << "*.htm" ;
     QString savedPath = "./../docs_path_info.txt";
+    QString tempPath = "./../TempFile/";
 
     QMap<unsigned int, QString> newDocInfo;
     QMap<unsigned int, QString> allDocInfo;

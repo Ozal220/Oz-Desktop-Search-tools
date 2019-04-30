@@ -80,7 +80,7 @@ bool InvertedIndex::loadIndex(string path)
     ifstream file(path);
     if(!file.is_open())
     {
-        qDebug("file open failed");
+        qDebug() << QString::fromStdString(path) << " open failed";
         return false;
     }
     else {

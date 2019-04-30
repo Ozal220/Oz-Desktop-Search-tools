@@ -1,4 +1,5 @@
 #include <docsegementation.h>
+#include <QSet>
 
 int DocSegmentation::useJieba(string file_path) {
     // 字典位置
@@ -19,22 +20,44 @@ int DocSegmentation::useJieba(string file_path) {
     char buffer[512];           //jieba分词buffer值暂设为512
     vector<cppjieba::Word> words_with_offset;
 
-    WordsInfo *wordInfoPtr;
+    //加载停用词
+    set<string> stop_words;
+    stop_words.insert(" ");
+    QString stopWord;
+    QFile stop_words_file("./../Oz-DesktopSearch/cppjieba/dict/my_stop_words.utf8");
+    if(stop_words_file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream in(&stop_words_file);
+        while (!in.atEnd()) {
+            in >> stopWord;
+            stop_words.insert(stopWord.toStdString());
+        }
+    }
 
+    WordsInfo *wordInfoPtr;
     QMap<string, WordsInfo>::Iterator iter;
 
     ifstream ifs(file_path);
     if(!ifs.is_open())       
         return -1;
 
-    if(!ifs.eof())
+//    int i = 1;
+    while(!ifs.eof())
     {
         ifs.getline(buffer, 512);
         s = buffer;
         jieba.CutForSearch(s, words_with_offset);       //分词
-
+//        qDebug() << i++ << " " << buffer << QString::fromStdString(s);
         for(auto word : words_with_offset)
         {
+
+            //跳过停用词
+            if(stop_words.find(word.word) != stop_words.end())
+            {
+//                qDebug() << "是停用词" << QString::fromStdString(word.word);
+                continue;
+            }
+
             iter = wordsMap.find(word.word);
             if(iter != wordsMap.end()){
                 // 单词已存在

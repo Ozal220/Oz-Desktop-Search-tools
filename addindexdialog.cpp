@@ -16,7 +16,7 @@ addIndexDialog::~addIndexDialog()
 
 void addIndexDialog::on_choiceDir_clicked()
 {
-    ui->Path->setText(QFileDialog::getExistingDirectory(this, tr("选择文件夹"), "./../Test")); //选择路径
+    ui->Path->setText(QFileDialog::getExistingDirectory(this, tr("选择文件夹"), "../Test")); //选择路径
 }
 
 //确认按钮

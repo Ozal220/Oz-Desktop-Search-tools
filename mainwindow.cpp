@@ -13,14 +13,45 @@ MainWindow::MainWindow(QWidget *parent) :
     docCollectionPtr->load();
     docSegmentationPtr = new DocSegmentation(); //对文档进行分词并保存类   
     indexPtr = new InvertedIndex();             //索引控制
-
     ui->setupUi(this);
-//    indexPtr->show();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+//加载索引并修改索引界面
+void MainWindow::loadIndexUI()
+{
+    QDir dir("./../Index");    //打开索引文件夹
+    if(!dir.exists())
+    {
+        qDebug() << "wrong path!";
+        return;
+    }
+
+    dir.setFilter(QDir::Files | QDir::NoDot | QDir::NoDotDot);
+    if(dir.entryInfoList().isEmpty())
+    {
+        qDebug("不存在已建立的索引");
+        return;
+    }
+
+    ui->indexList->setSelectionMode(QAbstractItemView::MultiSelection);
+    for(auto indexFile : dir.entryInfoList())   //循环打开文件夹内的文件
+    {
+        //qDebug() << indexFile.filePath() << " " << indexFile.fileName();
+        if(indexPtr->loadIndex(indexFile.filePath().toStdString())) //加载索引成功，则添加索引图标
+        {
+            indexPtr->addToIndexList();                            //将索引添加到索引列表
+            indexPtr->addToPathList(indexFile.filePath());
+            addBox(indexFile.fileName());                           //添加索引界面
+        }
+        else {
+            qDebug("添加索引失败");
+        }
+    }
 }
 
 //点击添加索引按钮
@@ -51,6 +82,7 @@ void MainWindow::receiveData(QString path, QStringList filter, QString indexName
         else {
             qDebug() << "文档" << docIter.key() << "分词完成";
             // 将得到的文档单词信息保存到索引
+            //docSegmentationPtr->showMap();
             for (wordIter = docSegmentationPtr->getWordsMap().begin(); wordIter != docSegmentationPtr->getWordsMap().end(); wordIter++)
             {
                 // 插入到索引
@@ -71,6 +103,7 @@ void MainWindow::on_searchButton_clicked()
     ui->resultListWidget->clear();
     bool have = false;
     QString resultStr;
+    QStringList splitList;
     qDebug() << "搜索:<" << ui->searchLine->text() << ">的结果";
     auto indexList = indexPtr->getIndexList();
     for(int i = 0; i < ui->indexList->count(); i++)
@@ -85,7 +118,8 @@ void MainWindow::on_searchButton_clicked()
                 {
                     auto iter = docCollectionPtr->getAllDocInfo().find(docIter.key());
                     if(!iter->isNull()){
-                        resultStr = "文档:" + iter.value() + " 出现次数:" + QString("%1").arg(docIter->count);
+                        splitList = iter.value().split('/');                //按/分割，最后的字符串为文件名
+                        resultStr = "文档:" + splitList.last() + " 出现次数:" + QString("%1").arg(docIter->count);
                         qDebug() << resultStr;
                         ui->resultListWidget->addItem(resultStr);
                     }
@@ -102,39 +136,6 @@ void MainWindow::on_searchButton_clicked()
 
 }
 
-//加载索引并修改索引界面
-void MainWindow::loadIndexUI()
-{
-    QDir dir("./../Index");    //打开索引文件夹
-    if(!dir.exists())
-    {
-        qDebug() << "wrong path";
-        return;
-    }
-
-    dir.setFilter(QDir::Files | QDir::NoDot | QDir::NoDotDot);
-    if(dir.entryInfoList().isEmpty())
-    {
-        qDebug("不存在已建立的索引");
-        return;
-    }
-
-    ui->indexList->setSelectionMode(QAbstractItemView::MultiSelection);
-    for(auto indexFile : dir.entryInfoList())   //循环打开文件夹内的文件
-    {
-        qDebug() << indexFile.filePath() << " " << indexFile.fileName();
-
-        if(indexPtr->loadIndex(indexFile.filePath().toStdString())) //加载索引成功，则添加索引图标
-        {
-            indexPtr->addToIndexList();                            //将索引添加到索引列表
-            indexPtr->addToPathList(indexFile.filePath());
-            addBox(indexFile.fileName());                           //添加索引界面
-        }
-        else {
-            qDebug("添加索引失败");
-        }
-    }
-}
 
 inline void MainWindow::addBox(QString str){
     QListWidgetItem *item = new QListWidgetItem(str);

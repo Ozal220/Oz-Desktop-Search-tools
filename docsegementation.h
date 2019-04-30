@@ -5,6 +5,7 @@
 #include <string>
 #include <QMap>
 #include <QDebug>
+#include <QFile>
 
 using namespace std;
 
