@@ -36,38 +36,30 @@ int DocSegmentation::useJieba(string file_path) {
 
     WordsInfo *wordInfoPtr;
     QMap<string, WordsInfo>::Iterator iter;
-
     ifstream ifs(file_path);
     if(!ifs.is_open())       
         return -1;
 
-//    int i = 1;
     while(!ifs.eof())
     {
         ifs.getline(buffer, 512);
         s = buffer;
         jieba.CutForSearch(s, words_with_offset);       //分词
-//        qDebug() << i++ << " " << buffer << QString::fromStdString(s);
         for(auto word : words_with_offset)
         {
 
             //跳过停用词
             if(stop_words.find(word.word) != stop_words.end())
-            {
-//                qDebug() << "是停用词" << QString::fromStdString(word.word);
                 continue;
-            }
 
             iter = wordsMap.find(word.word);
-            if(iter != wordsMap.end()){
-                // 单词已存在
-                //qDebug() << "单词已存在:" << word.word.c_str();
-                iter->count += 1;               //出现次数+1
+            if(iter != wordsMap.end())                      // 单词已存在
+            {
+                iter->count += 1;                           //出现次数+1
                 iter->pos.push_back(word.unicode_offset);   //添加偏移量pos
             }
-            else {
-                // 新单词
-                //qDebug() << "新单词:" << word.word.c_str();
+            else                                            // 新单词
+            {
                 wordInfoPtr = new WordsInfo(1, word.unicode_offset);
                 wordsMap.insert(word.word, *wordInfoPtr);
             }

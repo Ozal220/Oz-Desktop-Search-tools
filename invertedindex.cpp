@@ -52,7 +52,7 @@ bool InvertedIndex::saveOnFile(QString path)
     ofstream file(filePath);
     if(!file.is_open())
     {
-        qDebug("index file open failed");
+        qDebug() << "create index " << QString::fromStdString(filePath) << " failed";
         return false;
     }
     else {
@@ -74,6 +74,7 @@ bool InvertedIndex::saveOnFile(QString path)
     return true;
 }
 
+//打开索引文件加载到新索引里
 bool InvertedIndex::loadIndex(string path)
 {
     indexMap.clear();

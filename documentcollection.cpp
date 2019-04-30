@@ -21,21 +21,22 @@ void DocCollettion::findFiles(QString path)
     {
         if(mfi.isFile())
         {
-            qDebug()<< "File :" << mfi.filePath();
+            //qDebug()<< "File :" << mfi.filePath();
             if(mfi.suffix() == "pdf")                                   //pdf
             {
-                qDebug("pdf2txt");
+                qDebug()<< "pdf2txt" << ",filePath=" << mfi.filePath();
                 QString newPath = this->tempPath + "pdf" + QString("%1").arg(docID) + ".txt";
                 pdfToText(mfi.filePath(), newPath);
-                this->newDocInfo.insert(this->docID, newPath);              //pdf转txt后的新地址
+                this->newDocInfo.insert(this->docID, newPath);              //转txt后的新地址(TempFile目录下)
             }
             else if(mfi.suffix() == "html") {
                 qDebug() << "html2txt" << ",filePath=" << mfi.filePath();
                 QString newPath = this->tempPath + "html" + QString("%1").arg(docID) + ".txt";
                 html2Text(mfi.filePath(), newPath);
-                this->newDocInfo.insert(this->docID, newPath);
+                this->newDocInfo.insert(this->docID, newPath);              //转txt后的新地址(TempFile目录下)
             }
             else {                                                          //txt
+                qDebug()<< "txt" << ",filePath=" << mfi.filePath();
                 this->newDocInfo.insert(this->docID, mfi.filePath());
             }
             this->allDocInfo.insert(this->docID++, mfi.filePath());
@@ -56,7 +57,7 @@ bool DocCollettion::saveOnfile()
     file.open(this->savedPath.toStdString(), std::ios::app);    //以追加方式添加
     if(!file.is_open())
     {
-        qDebug("open file failed!");
+        qDebug("open save doc_Info file failed!");
         return false;
     }
     QMap<unsigned int, QString>::Iterator iter = allDocInfo.find(newDocInfo.firstKey());
@@ -69,7 +70,7 @@ bool DocCollettion::saveOnfile()
     return true;
 }
 
-// 从已存文档读取信息，存到map: docInfo
+// 已存文档信息(id, path)存到map: docInfo
 void DocCollettion::load()
 {
     QFileInfo file(savedPath);
@@ -87,7 +88,6 @@ void DocCollettion::load()
             while (!in.atEnd()) {
                 in >> id;
                 path = in.readLine();
-//                qDebug() << id << " " << path;
                 this->allDocInfo.insert(id, path);
             }
             this->docID = id + 1;                   //本次docID自增从最后读取的id开始(这话可能只有自己懂。。。)

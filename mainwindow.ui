@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>975</width>
-    <height>636</height>
+    <width>974</width>
+    <height>592</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,86 +17,58 @@
    <widget class="QListWidget" name="resultListWidget">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>220</y>
-      <width>931</width>
-      <height>341</height>
+      <x>340</x>
+      <y>10</y>
+      <width>621</width>
+      <height>531</height>
      </rect>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>0</y>
-      <width>511</width>
+      <x>30</x>
+      <y>10</y>
+      <width>291</width>
       <height>101</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLineEdit" name="searchLine"/>
-     </item>
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="2">
       <widget class="QPushButton" name="searchButton">
        <property name="text">
         <string>搜索关键词</string>
        </property>
       </widget>
      </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="gridLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>430</x>
-      <y>110</y>
-      <width>511</width>
-      <height>91</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
-      <widget class="QCheckBox" name="htmBox">
+     <item row="1" column="1">
+      <widget class="QPushButton" name="pushButton">
+       <property name="maximumSize">
+        <size>
+         <width>115</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
-        <string>html/htm</string>
+        <string>添加用户词典</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="txtBox">
-       <property name="text">
-        <string>txt</string>
+     <item row="1" column="0">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
-     <item row="2" column="1">
-      <widget class="QCheckBox" name="checkBox_3">
-       <property name="text">
-        <string>ppt</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QCheckBox" name="pdfBox">
-       <property name="text">
-        <string>pdf</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QCheckBox" name="docBox">
-       <property name="text">
-        <string>doc/docx</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QCheckBox" name="checkBox_6">
-       <property name="text">
-        <string>excel</string>
-       </property>
-      </widget>
+     <item row="0" column="0" colspan="3">
+      <widget class="QLineEdit" name="searchLine"/>
      </item>
     </layout>
    </widget>
@@ -104,9 +76,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>10</y>
-      <width>381</width>
-      <height>201</height>
+      <y>130</y>
+      <width>291</width>
+      <height>411</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -122,19 +94,6 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item>
         <widget class="QPushButton" name="deleteIndexButton">
          <property name="text">
@@ -201,7 +160,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>975</width>
+     <width>974</width>
      <height>25</height>
     </rect>
    </property>

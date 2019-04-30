@@ -6,9 +6,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-
-    // 选择文件夹，找出文件夹内所有符合格式的文档,并将这些文档按Map<unsigned int DocID, struct<string path, string lastmodifiedTime>>形式读入内存并保存到文件
-
+    /*
+     *  1.加载已存的索引文件到内存，并加载界面。在main.cpp里调用loadIndexUI()
+     *  2.添加新索引：
+     *      2.1 打开文件夹采集其中用户指定的类型的文件<txt/html/pdf>, html和pdf需要解析，解析后的文件放到TempFile文件里。文件路径保存到内存和文件
+     *      2.2 逐个文件(这时都转为了txt)进行分词
+     *      2.3 分词后的结果存到index里，index添加到indexList
+     */
     docCollectionPtr = new DocCollettion();     //采集文档并保存类
     docCollectionPtr->load();
     docSegmentationPtr = new DocSegmentation(); //对文档进行分词并保存类   
@@ -44,8 +48,9 @@ void MainWindow::loadIndexUI()
         //qDebug() << indexFile.filePath() << " " << indexFile.fileName();
         if(indexPtr->loadIndex(indexFile.filePath().toStdString())) //加载索引成功，则添加索引图标
         {
-            indexPtr->addToIndexList();                            //将索引添加到索引列表
-            indexPtr->addToPathList(indexFile.filePath());
+            indexPtr->addToIndexList();                            //将新索引添加到索引列表
+            qDebug() << "添加第" << indexPtr->getIndexMap().size() << "个索引:" << indexFile.fileName();
+            //indexPtr->addToPathList(indexFile.filePath());
             addBox(indexFile.fileName());                           //添加索引界面
         }
         else {
@@ -54,7 +59,8 @@ void MainWindow::loadIndexUI()
     }
 }
 
-//点击添加索引按钮
+
+//添加索引按钮点击事件->打开addIndexDialog窗口.用receiveData函数获取信息
 void MainWindow::on_addIndexButton_clicked()
 {
     indexDialogPtr = new addIndexDialog();
@@ -63,8 +69,11 @@ void MainWindow::on_addIndexButton_clicked()
     indexDialogPtr->show();
 }
 
+
+//文件采集-分词-创建索引
 void MainWindow::receiveData(QString path, QStringList filter, QString indexName)
 {
+    //文件采集并保存模块
     docCollectionPtr->setFilters(filter);
     docCollectionPtr->findFiles(path);
     if(!docCollectionPtr->saveOnfile())
@@ -72,17 +81,18 @@ void MainWindow::receiveData(QString path, QStringList filter, QString indexName
     else
         qDebug("创建<文档信息文件>成功");
 
-    QMap<unsigned int, QString>::iterator docIter;          //遍历所有文档，根据路径打开
+
+    //遍历所有新文档、进行分词、添加到索引
+    QMap<unsigned int, QString>::iterator docIter;
     QMap<string, DocSegmentation::WordsInfo>::iterator wordIter;
 
     for(docIter = docCollectionPtr->getNewDocInfo().begin(); docIter != docCollectionPtr->getNewDocInfo().end(); docIter++)
     {
-        if(-1 == docSegmentationPtr->useJieba(docIter.value().toStdString()))     //对文档分词
-            qDebug() << "文档" << docIter.value() << "打开失败";
-        else {
-            qDebug() << "文档" << docIter.key() << "分词完成";
-            // 将得到的文档单词信息保存到索引
-            //docSegmentationPtr->showMap();
+        if(-1 == docSegmentationPtr->useJieba(docIter.value().toStdString()))   //对文档分词
+            qDebug() << docIter.value() << "分词失败";
+        else                                                                    //分词后的数据保存到索引
+        {
+            qDebug() << docIter.key() << "分词完成";
             for (wordIter = docSegmentationPtr->getWordsMap().begin(); wordIter != docSegmentationPtr->getWordsMap().end(); wordIter++)
             {
                 // 插入到索引
@@ -97,6 +107,7 @@ void MainWindow::receiveData(QString path, QStringList filter, QString indexName
     addBox(indexName);
 }
 
+
 //点击搜索按钮
 void MainWindow::on_searchButton_clicked()
 {
@@ -104,9 +115,9 @@ void MainWindow::on_searchButton_clicked()
     bool have = false;
     QString resultStr;
     QStringList splitList;
-    qDebug() << "搜索:<" << ui->searchLine->text() << ">的结果";
     auto indexList = indexPtr->getIndexList();
-    for(int i = 0; i < ui->indexList->count(); i++)
+
+    for(int i = 0; i < ui->indexList->count(); i++)                 //遍历索引列表，找出选中的索引
     {
         if(ui->indexList->item(i)->checkState() == Qt::Checked)
         {
@@ -120,18 +131,15 @@ void MainWindow::on_searchButton_clicked()
                     if(!iter->isNull()){
                         splitList = iter.value().split('/');                //按/分割，最后的字符串为文件名
                         resultStr = "文档:" + splitList.last() + " 出现次数:" + QString("%1").arg(docIter->count);
-                        qDebug() << resultStr;
                         ui->resultListWidget->addItem(resultStr);
                     }
                 }
             }
-
         }
     }
     if(!have)
     {
-        qDebug() << "未找到包含<" << ui->searchLine->text() << ">的文档";
-        ui->resultListWidget->insertItem(5,"未找到包含该词的文档");
+        ui->resultListWidget->insertItem(0, "                           未找到包含该词的文档");
     }
 
 }
@@ -143,9 +151,11 @@ inline void MainWindow::addBox(QString str){
     ui->indexList->addItem(item);
 }
 
+
 void MainWindow::on_deleteIndexButton_clicked()
 {
-    for(int i = 0; i < ui->indexList->count(); i++){
+    for(int i = 0; i < ui->indexList->count(); i++)
+    {
         if(ui->indexList->item(i)->checkState() == Qt::Checked){
             ui->indexList->takeItem(i);                     //删除界面对应行
             indexPtr->getIndexList().removeAt(i);           //删除内存中的索引
